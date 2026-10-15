@@ -1,0 +1,65 @@
+{
+  "name": "smart-compact",
+  "version": "0.3.1",
+  "description": "Compacts the Claude Code context at the most cost-effective moment, aware of the warm prompt cache; Haiku judges task boundaries, topic switches and what to keep",
+  "userConfig": {
+    "softTokens": {
+      "type": "number",
+      "title": "Assessment threshold (tokens)",
+      "description": "From this size Haiku decides after every turn whether to compact",
+      "default": 180000
+    },
+    "hardTokens": {
+      "type": "number",
+      "title": "Hard threshold (tokens)",
+      "description": "From this size compact right after the turn",
+      "default": 350000
+    },
+    "idleMinutes": {
+      "type": "number",
+      "title": "Mid-work pause (min)",
+      "description": "How long to wait without new messages when the task is not finished; never longer than the cache lives",
+      "default": 8
+    },
+    "doneIdleSeconds": {
+      "type": "number",
+      "title": "Pause after a finished task (s)",
+      "description": "How long to wait when Haiku considers the task finished",
+      "default": 60
+    },
+    "helperModel": {
+      "type": "string",
+      "title": "Helper model",
+      "description": "Classifier and author of the compaction notes; empty disables the helper",
+      "default": "claude-haiku-5-5"
+    },
+    "topicCheck": {
+      "type": "boolean",
+      "title": "Compact on topic switch",
+      "description": "Before a new message Haiku checks whether it starts a new task and compacts before it",
+      "default": true
+    },
+    "coldTokens": {
+      "type": "number",
+      "title": "Cold-cache threshold (tokens)",
+      "description": "If the cache is cold and the context is larger than this, compact before the next message: the history would be re-read at full price anyway",
+      "default": 120000
+    },
+    "cacheTtl": {
+      "type": "string",
+      "title": "Cache lifetime",
+      "description": "auto learns it from actual cache hits; 5m or 1h sets it",
+      "options": [
+        "auto",
+        "5m",
+        "1h"
+      ],
+      "default": "auto"
+    }
+  },
+  "author": {
+    "name": "mdseyam-as"
+  },
+  "repository": "https://github.com/mdseyam-as/claude-smart-compact",
+  "license": "MIT"
+}

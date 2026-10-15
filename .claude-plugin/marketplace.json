@@ -1,0 +1,13 @@
+{
+  "name": "smart-compact",
+  "owner": {
+    "name": "mdseyam-as"
+  },
+  "description": "Smart context compaction for Claude Code",
+  "plugins": [
+    {
+      "name": "smart-compact",
+      "source": "./"
+    }
+  ]
+}
