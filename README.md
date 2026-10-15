@@ -11,6 +11,7 @@ It watches the context size after every turn, knows whether the prompt cache is 
 - [Configuration](#configuration)
 - [FAQ](#faq)
 - [Troubleshooting](#troubleshooting)
+- [What the plugin runs and sends](#what-the-plugin-runs-and-sends)
 - [Limitations](#limitations)
 
 ## Why
@@ -245,7 +246,19 @@ Haiku's judgment is a heuristic, so sometimes a compaction happens slightly earl
 No — only in Claude Code (the Code tab of the desktop app and the terminal `claude`).
 
 **Is anything sent anywhere?**
-Only the usual model calls through your own Claude Code session (Haiku goes through the session's own client). The only value the plugin persists is the learned cache lifetime, kept in Claude Code's local plugin store.
+See [What the plugin runs and sends](#what-the-plugin-runs-and-sends) below. In short: nothing leaves your machine except model calls through your own Claude Code session.
+
+## What the plugin runs and sends
+
+Full disclosure of everything the plugin does:
+
+- **Reads** the context usage, prompt-cache usage and transcript of the current session through Claude Code's plugin API (`$.session.usage()`, `$.session.messages()`).
+- **Calls the helper model** (`claude-haiku-5-5` by default) through your own Claude Code session's client (`$.model.complete`). Each call sends an excerpt of the current session: the first user message and the last ~18 messages, trimmed to at most 16,000 characters, plus your new message when checking for a topic switch. Nothing is sent when the context is below the thresholds, and nothing at all when `helperModel` is empty.
+- **Triggers compaction** with Claude Code's own `/compact` mechanism (`$.session.compact`), passing the instructions described above.
+- **Stores** one value locally in Claude Code's plugin store: the learned cache lifetime (5 or 60 minutes).
+- **Shows** a status line, notifications, and registers the `/smart-compact` command.
+
+It does **not** make network requests of its own, read or write files, run shell commands, read environment variables or credentials, or change any Claude Code settings or permissions. The full source is a single readable file: [`hooks/register.ts`](hooks/register.ts).
 
 ## Troubleshooting
 
